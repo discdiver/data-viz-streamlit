@@ -1,10 +1,10 @@
 import streamlit as st
-import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-import altair
+import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
+import altair as alt
 
 st.set_page_config(layout="wide")
 
@@ -21,7 +21,9 @@ with st.beta_container():
     # plot
     st.header(f"Showing:  {chart_type}")
 
-col1, col2 = st.beta_columns(2)
+   
+
+# col1, co2 = st.beta_columns(2)
 
 
 def return_matplotlib_plot(plot_type: str):
@@ -34,6 +36,10 @@ def return_matplotlib_plot(plot_type: str):
         ax.hist(df["Var1"])
     elif chart_type == "Bar":
         ax.bar(x=df["Var1"], height=df["Var2"])
+    elif chart_type == "Boxplot":
+        ax.boxplot(x=df["Var1"])
+    elif chart_type == "Line":
+        ax.plt(x=df["Var1"], y=df["Var2"])
     return fig
 
 
@@ -47,9 +53,13 @@ def return_sns_plot(plot_type: str):
         sns.histplot(data=df, x="Var1")
     elif chart_type == "Bar":
         sns.barplot(data=df, x="Var1", y="Var2")
+    elif chart_type == "Boxplot":
+        sns.boxplot(data=df, x="Var1")
+    elif chart_type == "Line":
+        sns.lineplot(data=df, x="Var1", y="Var2")
     return fig
 
-
+@st.cache
 def return_plotly_plot(plot_type: str):
     """ return plotly plots """
 
@@ -59,29 +69,56 @@ def return_plotly_plot(plot_type: str):
         fig = px.histogram(df, "Var1")
     elif chart_type == "Bar":
         fig = px.bar(df, "Var1", "Var2")
+    elif chart_type == "Boxplot":
+        fig = px.box(df, "Var1")
+    elif chart_type == "Line":
+        fig = px.line(df, "Var1", "Var2")
+    return fig
+
+@st.cache
+def return_altair_plot(plot_type: str):
+    """ return altair plots """
+
+    if chart_type == "Scatter":
+        fig = alt.Chart(df).mark_bar().encode(x='Var1', y='Var2')
+    elif chart_type == "Histogram":
+        fig = alt.Chart(df).mark_bar().encode(x='Var1', y='Var2')
+    elif chart_type == "Bar":
+        fig = alt.Chart(df).mark_bar().encode(x='Var1', y='Var2')
+    elif chart_type == "Boxplot":
+        fig = alt.Chart(df).mark_bar().encode(x='Var1', y='Var2')
+    elif chart_type == "Line":
+        fig = alt.Chart(df).mark_bar().encode(x='Var1', y='Var2')
     return fig
 
 
-with col1:
+# output
+# with col1:
 
-    "Matplotlib"
-    with st.echo():
-        plot = return_matplotlib_plot(chart_type)
-        st.pyplot(plot)
+"Matplotlib"
+with st.echo():
+    plot = return_matplotlib_plot(chart_type)
+    st.pyplot(plot)
 
-    "Seaborn"
-    with st.echo():
-        plot = return_sns_plot(chart_type)
-        st.pyplot(plot)
+"Seaborn"
+with st.echo():
+    plot = return_sns_plot(chart_type)
+    st.pyplot(plot)
 
-    "Plotly Express"
-    with st.echo():
-        plot = return_plotly_plot(chart_type)
-        st.plotly_chart(plot, use_container_width=True)
+"Plotly Express"
+with st.echo():
+    plot = return_plotly_plot(chart_type)
+    st.plotly_chart(plot, use_container_width=True)
 
+# saying cache mutation issue
+# "Altair"
+# with st.echo():
+#     plot = return_altair_plot(chart_type)
+#     st.altair_chart(plot, use_container_width=True)
 
 with st.beta_container():
     show_data = st.checkbox("See the raw data?")
+
     if show_data:
         df
 
