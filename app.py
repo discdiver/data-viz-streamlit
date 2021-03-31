@@ -44,7 +44,7 @@ with col1:
 
     with st.echo():
         fig = px.scatter(df, x="Var1", y="Var2", title=f"Plotly Express {chart_type}")
-        st.plotly_chart(fig)
+        st.plotly_chart(fig, use_container_width=True)
 
 with col2:
     st.header("Histogram")
@@ -57,7 +57,7 @@ with col2:
 
     with st.echo():
         fig = px.histogram(df, "Var1", title=f"Plotly Express {chart_type}")
-        st.plotly_chart(fig)
+        st.plotly_chart(fig, use_container_width=True)
 
 with col3:
     st.header("Bar chart")
@@ -74,7 +74,7 @@ with col3:
 
     with st.echo():
         fig = px.scatter(df, x="Var1", y="Var2", title=f"Plotly Express {chart_type}")
-        st.plotly_chart(fig)
+        st.plotly_chart(fig, use_container_width=True)
 
 
 # the data
