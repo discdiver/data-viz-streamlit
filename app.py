@@ -7,7 +7,6 @@ import seaborn as sns
 import plotly.express as px
 
 
-
 col1, col2, col3 = st.beta_columns(3)
 
 
@@ -77,7 +76,6 @@ with col3:
         st.plotly_chart(fig, use_container_width=True)
 
 
-# the data
 show_data = st.checkbox("See the raw data?")
 if show_data:
     df
