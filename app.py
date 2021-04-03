@@ -12,7 +12,7 @@ st.set_page_config(layout="wide")
 plot_types = ("Histogram", "Bar", "Boxplot", "Scatter", "Line")
 libs = ("Matplotlib", "Seaborn", "Plotly Express", "Altair")
 
-
+# get data
 @st.cache
 def load_penguins():
     return sns.load_dataset("penguins")
@@ -20,22 +20,23 @@ def load_penguins():
 
 df = load_penguins()
 
+# start of output
+with st.beta_container():
+    st.title("Python Data Visualization Tour")
+    st.header("Popular Plots in Popular Libraries")
 
-# sidebar to get user type
+# User choose user type
 chart_type = st.selectbox("Choose your chart type", plot_types)
 
 with st.beta_container():
-    # plot
-    st.header(f"Showing:  {chart_type}")
-
+    st.subheader(f"Showing:  {chart_type}")
+    st.write("")
 
 three_cols = st.checkbox("2 columns?")
 if three_cols:
     col1, col2 = st.beta_columns(2)
-else:
-    col1 = st.beta_columns(1)
 
-
+# functions for creating plots and showing code
 def return_matplotlib_plot(plot_type: str):
     """ return matplotlib plots """
 
@@ -163,7 +164,7 @@ def show_plot(kind: str):
         st.altair_chart(plot, use_container_width=True)
 
 
-# output
+# put plots in layout
 if three_cols:
     with col1:
         show_plot(kind="Matplotlib")
@@ -185,8 +186,10 @@ with st.beta_container():
     if show_data:
         df
 
-    # ask for assistance
+    # help out
     st.write(
-        """Python has many data visualization libraries. This gallery is not exhaustive. 
-    If you would like to add code for another library, please submit a pull request."""
+        """Python has many data visualization libraries. 
+        This gallery is not exhaustive. 
+        If you would like to add code for another library, please check out 
+        the code on GitHub and submit a pull request."""
     )
