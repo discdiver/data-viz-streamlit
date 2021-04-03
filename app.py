@@ -10,6 +10,7 @@ import altair as alt
 st.set_page_config(layout="wide")
 
 plot_types = ("Histogram", "Bar", "Boxplot", "Scatter", "Line")
+libs = ('Matplotlib', 'Seaborn', 'Plotly Express', 'Altair')
 
 @st.cache
 def load_penguins():
@@ -101,70 +102,45 @@ def return_altair_plot(plot_type: str):
     return fig
 
 
-# functions to output data
-
-
-def show_plt():
-    st.write("Matplotlib")
-    with st.echo():
+# create plots
+def show_plot(kind: str):
+    st.write(kind)
+    if kind == "Matplotlib":
         plot = return_matplotlib_plot(chart_type)
         st.pyplot(plot)
-
-
-def show_seaborn():
-    st.write("Seaborn")
-    with st.echo():
+    elif kind == "Seaborn":
         plot = return_sns_plot(chart_type)
         st.pyplot(plot)
-
-
-def show_plotly():
-    st.write("Plotly Express")
-    with st.echo():
+    elif kind == "Plotly Express":
         plot = return_plotly_plot(chart_type)
         st.plotly_chart(plot, use_container_width=True)
-
-
-def show_altair():
-    st.write("Altair")
-    with st.echo():
+    elif kind == 'Altair':
         plot = return_altair_plot(chart_type)
         st.altair_chart(plot, use_container_width=True)
-
 
 # output
 if three_cols:
     with col1:
-        show_plt()
-else:
-    show_plt()
-
-if three_cols:
+        show_plot(kind='Matplotlib')
     with col2:
-        show_seaborn()
-else:
-    show_seaborn()
-
-if three_cols:
+        show_plot(kind='Seaborn')
     with col3:
-        show_plotly()
-else:
-    show_plotly()
-
-if three_cols:
+        show_plot(kind='Plotly Express')
     with col1:
-        show_altair()
+        show_plot(kind='Altair')
 else:
-    show_altair()
+    for lib in libs:
+        show_plot(kind=lib)
 
-
+# display data
 with st.beta_container():
     show_data = st.checkbox("See the raw data?")
 
     if show_data:
         df
 
-    st.text(
+# ask for assistance
+    st.write(
         """Python has many data visualization libraries. This gallery is not exhaustive. 
     If you would like to add code for another library, please submit a pull request."""
     )
