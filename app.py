@@ -9,8 +9,8 @@ import altair as alt
 
 st.set_page_config(layout="wide")
 
-plot_types = ("Histogram", "Bar", "Boxplot", "Scatter", "Line")
-libs = ("Matplotlib", "Seaborn", "Plotly Express", "Altair")
+plot_types = ("Histogram", "Bar", "Boxplot", "Scatter", "Line", "3D Scatter")
+libs = ("Matplotlib", "Seaborn", "Plotly Express", "Altair", "Pandas Matplotlib")
 
 # get data
 @st.cache
@@ -20,10 +20,18 @@ def load_penguins():
 
 df = load_penguins()
 
-# start of output
 with st.beta_container():
     st.title("Python Data Visualization Tour")
     st.header("Popular Plots in Popular Libraries")
+    st.write(
+        """This website shows plots using default plot settings. 
+    It is meant to be a learning tool. 
+    It also shows and the relevant code to create them. 
+    Plots are interactive where that's the default or easy to add.
+    It uses streamlit and the Penguins dataset. link to dataset TK
+    To see the full code go to GitHub TK
+    """
+    )
 
 # User choose user type
 chart_type = st.selectbox("Choose your chart type", plot_types)
@@ -36,7 +44,7 @@ three_cols = st.checkbox("2 columns?")
 if three_cols:
     col1, col2 = st.beta_columns(2)
 
-# functions for creating plots and showing code
+
 def return_matplotlib_plot(plot_type: str):
     """ return matplotlib plots """
 
@@ -49,13 +57,24 @@ def return_matplotlib_plot(plot_type: str):
             ax.hist(df["bill_depth_mm"])
     elif chart_type == "Bar":
         with st.echo():
-            ax.bar(x=df["bill_depth_mm"], height=df["bill_length_mm"])
+            ax.bar(x=df["species"], height=df["bill_depth_mm"])
     elif chart_type == "Boxplot":
         with st.echo():
-            ax.boxplot(x=df["bill_depth_mm"])
+            # line_props = dict(color="r", alpha=0.3)
+            # bbox_props = dict(color="g", alpha=0.9, linestyle="dashdot")
+            # flier_props = dict(marker="o", markersize=17)
+            # ax.boxplot(df['bill_depth_mm'], notch=True, whiskerprops=line_props, boxprops=bbox_props, flierprops=flier_props,  sym='k.')
+            # ax.boxplot(x=df['species'], )
+            "broken"
     elif chart_type == "Line":
         with st.echo():
             ax.plot(df["bill_depth_mm"], df["bill_length_mm"])
+    elif chart_type == "3D Scatter":
+        ax = fig.add_subplot(projection="3d")
+        with st.echo():
+            ax.scatter3D(
+                xs=df["bill_depth_mm"], ys=df["bill_length_mm"], zs=df["body_mass_g"]
+            )
     return fig
 
 
@@ -65,19 +84,26 @@ def return_sns_plot(plot_type: str):
     fig, ax = plt.subplots()
     if chart_type == "Scatter":
         with st.echo():
-            sns.scatterplot(data=df, x="bill_depth_mm", y="bill_length_mm")
+            sns.scatterplot(
+                data=df, x="bill_depth_mm", y="bill_length_mm", hue="island"
+            )
     elif chart_type == "Histogram":
         with st.echo():
             sns.histplot(data=df, x="bill_depth_mm")
     elif chart_type == "Bar":
         with st.echo():
-            sns.barplot(data=df, x="bill_depth_mm", y="bill_length_mm")
+            sns.barplot(data=df, x="species", y="bill_depth_mm")
     elif chart_type == "Boxplot":
         with st.echo():
-            sns.boxplot(data=df, x="bill_depth_mm")
+            sns.boxplot(data=df, x="species", y="bill_depth_mm")
     elif chart_type == "Line":
         with st.echo():
             sns.lineplot(data=df, x="bill_depth_mm", y="bill_length_mm")
+    elif chart_type == "3D Scatter":
+        st.write("Seaborn doesn't do 3D ☹️")
+        sns.scatterplot(
+            data=df, x="bill_depth_mm", y="bill_length_mm", hue="island"
+        )
     return fig
 
 
@@ -86,19 +112,29 @@ def return_plotly_plot(plot_type: str):
 
     if chart_type == "Scatter":
         with st.echo():
-            fig = px.scatter(df, x="bill_depth_mm", y="bill_length_mm")
+            fig = px.scatter(data_frame=df, x="bill_depth_mm", y="bill_length_mm")
     elif chart_type == "Histogram":
         with st.echo():
-            fig = px.histogram(df, "bill_depth_mm")
+            fig = px.histogram(data_frame=df, x="bill_depth_mm")
     elif chart_type == "Bar":
         with st.echo():
-            fig = px.bar(df, "bill_depth_mm", "bill_length_mm")
+            fig = px.bar(data_frame=df, x="species", y="bill_depth_mm")
     elif chart_type == "Boxplot":
         with st.echo():
-            fig = px.box(df, "bill_depth_mm")
+            fig = px.box(data_frame=df, x="species", y="bill_depth_mm")
     elif chart_type == "Line":
         with st.echo():
-            fig = px.line(df, "bill_depth_mm", "bill_length_mm")
+            fig = px.line(data_frame=df, x="bill_depth_mm", y="bill_length_mm")
+    elif chart_type == "3D Scatter":
+        with st.echo():
+            fig = px.scatter_3d(
+                data_frame=df,
+                x="bill_depth_mm",
+                y="bill_length_mm",
+                z="body_mass_g",
+                color="species",
+            )
+
     return fig
 
 
@@ -110,7 +146,7 @@ def return_altair_plot(plot_type: str):
             fig = (
                 alt.Chart(df)
                 .mark_point()
-                .encode(x="bill_depth_mm", y="bill_length_mm")
+                .encode(x="bill_depth_mm", y="bill_length_mm", color="species")
                 .interactive()
             )
     elif chart_type == "Histogram":
@@ -126,15 +162,13 @@ def return_altair_plot(plot_type: str):
             fig = (
                 alt.Chart(df)
                 .mark_bar()
-                .encode(x="bill_depth_mm", y="bill_length_mm")
+                .encode(x="species", y="bill_depth_mm")
                 .interactive()
             )
     elif chart_type == "Boxplot":
         with st.echo():
             fig = (
-                alt.Chart(df)
-                .mark_boxplot()
-                .encode(x="bill_depth_mm:O", y="bill_length_mm:Q")
+                alt.Chart(df).mark_boxplot().encode(x="species:O", y="bill_depth_mm:Q")
             )
     elif chart_type == "Line":
         with st.echo():
@@ -144,6 +178,42 @@ def return_altair_plot(plot_type: str):
                 .encode(x="bill_depth_mm", y="bill_length_mm")
                 .interactive()
             )
+    elif chart_type == "3D Scatter":
+        st.write("Altair doesn't do 3D ☹️")
+        fig = (
+            alt.Chart(df)
+            .mark_point()
+            .encode(x="bill_depth_mm", y="bill_length_mm", color="species")
+            .interactive()
+        )
+    return fig
+
+
+def return_pd_plot(plot_type: str):
+    """ return pd matplotlib plots """
+
+    fig, axes = plt.subplots()
+    if chart_type == "Scatter":
+        with st.echo():
+            df.plot(
+                kind="scatter",
+                x="bill_depth_mm",
+                y="bill_length_mm",
+                subplots=True,
+                ax=axes,
+            )
+    elif chart_type == "Histogram":
+        with st.echo():
+            df.plot(kind="hist", x="bill_depth_mm")
+    elif chart_type == "Bar":
+        with st.echo():
+            df.plot(kind="bar", x="species", y="bill_depth_mm")
+    elif chart_type == "Boxplot":
+        with st.echo():
+            df.plot(kind="box", x="species", y="bill_depth_mm")
+    elif chart_type == "Line":
+        with st.echo():
+            df.plot(kind="line", x="bill_depth_mm", y="bill_length_mm")
     return fig
 
 
@@ -162,9 +232,12 @@ def show_plot(kind: str):
     elif kind == "Altair":
         plot = return_altair_plot(chart_type)
         st.altair_chart(plot, use_container_width=True)
+    elif kind == "Pandas Matplotlib":
+        plot = return_pd_plot(chart_type)
+        st.pyplot(plot)
 
 
-# put plots in layout
+# output plots
 if three_cols:
     with col1:
         show_plot(kind="Matplotlib")
@@ -174,6 +247,8 @@ if three_cols:
         show_plot(kind="Plotly Express")
     with col2:
         show_plot(kind="Altair")
+    with col1:
+        show_plot(kind="Pandas Matplotlib")
 else:
     with st.beta_container():
         for lib in libs:
@@ -186,10 +261,8 @@ with st.beta_container():
     if show_data:
         df
 
-    # help out
+    # ask for assistance
     st.write(
-        """Python has many data visualization libraries. 
-        This gallery is not exhaustive. 
-        If you would like to add code for another library, please check out 
-        the code on GitHub and submit a pull request."""
+        """Python has many data visualization libraries. This gallery is not exhaustive. 
+    If you would like to add code for another library, please submit a pull request."""
     )
