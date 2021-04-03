@@ -100,7 +100,7 @@ def return_sns_plot(plot_type: str):
         with st.echo():
             sns.lineplot(data=df, x="bill_depth_mm", y="bill_length_mm")
     elif chart_type == "3D Scatter":
-        st.write("Seaborn doesn't do 3D ☹️")
+        st.write("Seaborn doesn't do 3D ☹️. Here's 2D.")
         sns.scatterplot(
             data=df, x="bill_depth_mm", y="bill_length_mm", hue="island"
         )
@@ -179,7 +179,7 @@ def return_altair_plot(plot_type: str):
                 .interactive()
             )
     elif chart_type == "3D Scatter":
-        st.write("Altair doesn't do 3D ☹️")
+        st.write("Altair doesn't do 3D ☹️. Here's 2D.")
         fig = (
             alt.Chart(df)
             .mark_point()
@@ -192,28 +192,35 @@ def return_altair_plot(plot_type: str):
 def return_pd_plot(plot_type: str):
     """ return pd matplotlib plots """
 
-    fig, axes = plt.subplots()
+    fig, ax = plt.subplots()
     if chart_type == "Scatter":
         with st.echo():
-            df.plot(
+            ax_save = df.plot(
                 kind="scatter",
                 x="bill_depth_mm",
                 y="bill_length_mm",
-                subplots=True,
-                ax=axes,
+                ax=ax,
             )
     elif chart_type == "Histogram":
         with st.echo():
-            df.plot(kind="hist", x="bill_depth_mm")
+            ax_save = df.plot(kind="hist", x="bill_depth_mm")
     elif chart_type == "Bar":
         with st.echo():
-            df.plot(kind="bar", x="species", y="bill_depth_mm")
+            ax_save = df.plot(kind="bar", x="species", y="bill_depth_mm")
     elif chart_type == "Boxplot":
         with st.echo():
-            df.plot(kind="box", x="species", y="bill_depth_mm")
+            ax_save = df.plot(kind="box", x="species", y="bill_depth_mm")
     elif chart_type == "Line":
         with st.echo():
-            df.plot(kind="line", x="bill_depth_mm", y="bill_length_mm")
+            ax_save = df.plot(kind="line", x="bill_depth_mm", y="bill_length_mm")
+    elif chart_type == "3D Scatter":
+        st.write("Pandas doesn't do 3D ☹️. Here's 2D.")
+        ax_save = df.plot(
+            kind="scatter",
+            x="bill_depth_mm",
+            y="bill_length_mm",
+            ax=ax,
+        )
     return fig
 
 
