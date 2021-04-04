@@ -9,7 +9,13 @@ import altair as alt
 # can only set this once, first thing to set
 st.set_page_config(layout="wide")
 
-plot_types = ("Scatter", "Histogram", "Bar", "Boxplot", "Line", "3D Scatter")
+plot_types = (
+    "Scatter",
+    "Histogram",
+    "Bar",
+    "Line",
+    "3D Scatter",
+)  # add 'Boxplot' after fixes
 libs = ("Matplotlib", "Seaborn", "Plotly Express", "Altair", "Pandas Matplotlib")
 
 # get data
@@ -63,6 +69,9 @@ def return_matplotlib_plot(plot_type: str):
     elif chart_type == "Bar":
         with st.echo():
             ax.bar(x=df["species"], height=df["bill_depth_mm"])
+            plt.title("Mean Bill Depth by Species")
+            plt.xlabel("Species")
+            plt.ylabel("Mean Bill Depth (mm)")
     elif chart_type == "Boxplot":
         "Bug, can't plot matplotlib boxplot."
         # with st.echo():
@@ -94,6 +103,8 @@ def return_matplotlib_plot(plot_type: str):
     elif chart_type == "Line":
         with st.echo():
             ax.plot(df.index, df["bill_length_mm"])
+            plt.title("Bill Length Over Time")
+            plt.ylabel("Bill Length (mm)")
     elif chart_type == "3D Scatter":
         ax = fig.add_subplot(projection="3d")
         with st.echo():
@@ -132,15 +143,19 @@ def return_sns_plot(plot_type: str):
     elif chart_type == "Bar":
         with st.echo():
             sns.barplot(data=df, x="species", y="bill_depth_mm")
+            plt.title("Mean Bill Depth by Species")
     elif chart_type == "Boxplot":
         with st.echo():
             sns.boxplot(data=df)
+            plt.title("Bill Depth Observations")
     elif chart_type == "Line":
         with st.echo():
             sns.lineplot(data=df, x=df.index, y="bill_length_mm")
+            plt.title("Bill Length Over Time")
     elif chart_type == "3D Scatter":
         st.write("Seaborn doesn't do 3D ☹️. Here's 2D.")
         sns.scatterplot(data=df, x="bill_depth_mm", y="bill_length_mm", hue="island")
+        plt.title("Just a 2D Scatterplot")
     return fig
 
 
@@ -177,7 +192,12 @@ def return_plotly_plot(plot_type: str):
             fig = px.box(data_frame=df, x="species", y="bill_depth_mm")
     elif chart_type == "Line":
         with st.echo():
-            fig = px.line(data_frame=df, x=df.index, y="bill_length_mm")
+            fig = px.line(
+                data_frame=df,
+                x=df.index,
+                y="bill_length_mm",
+                title="Bill Length Over Time",
+            )
     elif chart_type == "3D Scatter":
         with st.echo():
             fig = px.scatter_3d(
@@ -186,6 +206,7 @@ def return_plotly_plot(plot_type: str):
                 y="bill_length_mm",
                 z="body_mass_g",
                 color="species",
+                title="Interactive 3D Scatterplot!",
             )
 
     return fig
@@ -229,7 +250,7 @@ def return_altair_plot(plot_type: str):
     elif chart_type == "Line":
         with st.echo():
             fig = (
-                alt.Chart(df.reset_index())
+                alt.Chart(df.reset_index(), title="Bill Length Over Time")
                 .mark_line()
                 .encode(x="index:T", y="bill_length_mm:Q")
                 .interactive()
@@ -237,7 +258,7 @@ def return_altair_plot(plot_type: str):
     elif chart_type == "3D Scatter":
         st.write("Altair doesn't do 3D ☹️. Here's 2D.")
         fig = (
-            alt.Chart(df)
+            alt.Chart(df, title="Just a 2D Scatterplot")
             .mark_point()
             .encode(x="bill_depth_mm", y="bill_length_mm", color="species")
             .interactive()
@@ -287,9 +308,12 @@ def return_pd_plot(plot_type: str):
     elif chart_type == "Line":
         with st.echo():
             ax_save = df.plot(kind="line", use_index=True, y="bill_length_mm", ax=ax)
+            plt.title("Bill Length Over Time")
+            plt.ylabel("Bill Length (mm)")
     elif chart_type == "3D Scatter":
         st.write("Pandas doesn't do 3D ☹️. Here's 2D.")
         ax_save = df.plot(kind="scatter", x="bill_depth_mm", y="bill_length_mm", ax=ax)
+        plt.title("Just a 2D Scatterplot")
     return fig
 
 
@@ -342,17 +366,17 @@ with st.beta_container():
     st.write(
         """
         - This project uses [Streamlit](https://streamlit.io/) and the [Palmer Penguins](https://allisonhorst.github.io/palmerpenguins/) dataset.      
-        - Plots are interactive where that's the default or easy to add.
-        - Plots that use MatPlotlib under the hood have fig and ax objects defined before the code you see below.
         - To see the full code check out the [GitHub repo](https://github.com/discdiver/data-viz-streamlit).
-        - Lineplots should have sequence data, so I created a date index with a sequence of dates for them.
+        - Plots are interactive where that's the default or easy to add.
+        - Plots that use MatPlotlib under the hood have fig and ax objects defined before the code shown.
+        - Lineplots should have sequence data, so I created a date index with a sequence of dates for them. 
         - Color was added to scatterplots. 
+        - Where an axis label shows by default, I left it at is. Generally were it was missing, I added it.
         - There are multiple ways to make some of these plots.
-        - Where an axis label shows by default, I left it at is. Where it was missing, I added it.
-        - Python has many data visualization libraries. This gallery is not exhaustive. If you would like to add code for another library, please submit a [pull request](https://github.com/discdiver/data-viz-streamlit).
         - You can choose to see two columns, but with a narrow screen this will switch to one column automatically.
+        - Python has many data visualization libraries. This gallery is not exhaustive. If you would like to add code for another library, please submit a [pull request](https://github.com/discdiver/data-viz-streamlit).
         - For a larger tour of more plots, check out the [Python Graph Gallery](https://www.python-graph-gallery.com/density-plot/)
-        - That Plotly Express 3D Scatterplot is cool to play with. Check it out! 😎
+        - The interactive Plotly Express 3D Scatterplot is cool to play with. Check it out! 😎
         
         Made by Jeff Hale. 
         
