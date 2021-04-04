@@ -74,12 +74,7 @@ def return_matplotlib_plot(plot_type: str):
             ax.bar(x=df["species"], height=df["bill_depth_mm"])
     elif chart_type == "Boxplot":
         with st.echo():
-            # line_props = dict(color="r", alpha=0.3)
-            # bbox_props = dict(color="g", alpha=0.9, linestyle="dashdot")
-            # flier_props = dict(marker="o", markersize=17)
-            # ax.boxplot(df['bill_depth_mm'], notch=True, whiskerprops=line_props, boxprops=bbox_props, flierprops=flier_props,  sym='k.')
-            # ax.boxplot(x=df['species'], )
-            "broken"
+            "Bug, can't plot matplotlib plot if import seaborn."
     elif chart_type == "Line":
         with st.echo():
             ax.plot(df.index, df["bill_length_mm"])
@@ -109,7 +104,7 @@ def return_sns_plot(plot_type: str):
             sns.barplot(data=df, x="species", y="bill_depth_mm")
     elif chart_type == "Boxplot":
         with st.echo():
-            sns.boxplot(data=df, x="bill_depth_mm", y="bill_depth_mm")
+            sns.boxplot(data=df)
     elif chart_type == "Line":
         with st.echo():
             sns.lineplot(data=df, x=df.index, y="bill_length_mm")
@@ -226,7 +221,7 @@ def return_pd_plot(plot_type: str):
             ax_save = df.groupby("species").mean().plot(kind="bar", ax=ax)
     elif chart_type == "Boxplot":
         with st.echo():
-            ax_save = df.plot(kind="box", x="species", y="bill_depth_mm", ax=ax)
+            ax_save = df.plot(kind="box", ax=ax)
     elif chart_type == "Line":
         with st.echo():
             ax_save = df.plot(kind="line", use_index=True, y="bill_length_mm", ax=ax)
@@ -283,7 +278,10 @@ with st.beta_container():
     # ask for assistance
     st.write(
         """
-        Python has many data visualization libraries. This gallery is not exhaustive. 
+        Python has many data visualization libraries. This gallery is not exhaustive.
+        You should always give your plots a title. I don't here for code space reasons.
+        Some boxplots show different show different data where more convenient. 
         If you would like to add code for another library, 
-        please submit a [pull request](https://github.com/discdiver/data-viz-streamlit)."""
+        please submit a [pull request](https://github.com/discdiver/data-viz-streamlit).
+        """
     )
