@@ -26,9 +26,7 @@ df.index = pd.date_range(start="1/1/18", periods=len(df), freq="D")
 with st.beta_container():
     st.title("Python Data Visualization Tour")
     st.header("Popular plots in popular plotting libraries")
-    st.write(
-        """This is a learning tool with plots and code."""
-    )
+    st.write("""This is a learning tool with plots and code.""")
 
 
 # User choose user type
@@ -49,10 +47,19 @@ def return_matplotlib_plot(plot_type: str):
     fig, ax = plt.subplots()
     if chart_type == "Scatter":
         with st.echo():
-            ax.scatter(x=df["bill_depth_mm"], y=df["bill_length_mm"])
+            df["color"] = df["species"].replace(
+                {"Adelie": 1, "Chinstrap": 2, "Gentoo": 3}
+            )
+            ax.scatter(x=df["bill_depth_mm"], y=df["bill_length_mm"], c=df["color"])
+            plt.title("Bill Depth by Bill Length")
+            plt.xlabel("Bill Depth (mm)")
+            plt.ylabel("Bill Length (mm)")
     elif chart_type == "Histogram":
         with st.echo():
+            plt.title("Count of Bill Depth Observations")
             ax.hist(df["bill_depth_mm"])
+            plt.xlabel("Bill Depth (mm)")
+            plt.ylabel("Count")
     elif chart_type == "Bar":
         with st.echo():
             ax.bar(x=df["species"], height=df["bill_depth_mm"])
@@ -103,11 +110,16 @@ def return_sns_plot(plot_type: str):
     if chart_type == "Scatter":
         with st.echo():
             sns.scatterplot(
-                data=df, x="bill_depth_mm", y="bill_length_mm", hue="island"
+                data=df,
+                x="bill_depth_mm",
+                y="bill_length_mm",
+                hue="species",
             )
+            plt.title("Bill Depth by Bill Length")
     elif chart_type == "Histogram":
         with st.echo():
             sns.histplot(data=df, x="bill_depth_mm")
+            plt.title("Count of Bill Depth Observations")
     elif chart_type == "Bar":
         with st.echo():
             sns.barplot(data=df, x="species", y="bill_depth_mm")
@@ -129,11 +141,19 @@ def return_plotly_plot(plot_type: str):
     if chart_type == "Scatter":
         with st.echo():
             fig = px.scatter(
-                data_frame=df, x="bill_depth_mm", y="bill_length_mm", color="species"
+                data_frame=df,
+                x="bill_depth_mm",
+                y="bill_length_mm",
+                color="species",
+                title="Bill Depth by Bill Length",
             )
     elif chart_type == "Histogram":
         with st.echo():
-            fig = px.histogram(data_frame=df, x="bill_depth_mm")
+            fig = px.histogram(
+                data_frame=df,
+                x="bill_depth_mm",
+                title="Count of Bill Depth Observations",
+            )
     elif chart_type == "Bar":
         with st.echo():
             fig = px.bar(data_frame=df, x="species", y="bill_depth_mm")
@@ -162,7 +182,10 @@ def return_altair_plot(plot_type: str):
     if chart_type == "Scatter":
         with st.echo():
             fig = (
-                alt.Chart(df)
+                alt.Chart(
+                    df,
+                    title="Bill Depth by Bill Length",
+                )
                 .mark_point()
                 .encode(x="bill_depth_mm", y="bill_length_mm", color="species")
                 .interactive()
@@ -170,7 +193,7 @@ def return_altair_plot(plot_type: str):
     elif chart_type == "Histogram":
         with st.echo():
             fig = (
-                alt.Chart(df)
+                alt.Chart(df, title="Count of Bill Depth Observations")
                 .mark_bar()
                 .encode(alt.X("bill_depth_mm", bin=True), y="count()")
                 .interactive()
@@ -213,21 +236,28 @@ def return_pd_plot(plot_type: str):
     fig, ax = plt.subplots()
     if chart_type == "Scatter":
         with st.echo():
+            df["color"] = df["species"].replace(
+                {"Adelie": "blue", "Chinstrap": "orange", "Gentoo": "green"}
+            )
             ax_save = df.plot(
                 kind="scatter",
                 x="bill_depth_mm",
                 y="bill_length_mm",
+                c="color",
                 ax=ax,
+                title="Bill Depth by Bill Length",
             )
     elif chart_type == "Histogram":
         with st.echo():
-            ax_save = df["bill_depth_mm"].plot(kind="hist", ax=ax)
+            ax_save = df["bill_depth_mm"].plot(
+                kind="hist", ax=ax, title="Count of Bill Depth Observations"
+            )
+            plt.xlabel("Bill Depth (mm)")
     elif chart_type == "Bar":
-        st.write(
-            "The default isn't good, so I used groupby and you get a grouped bar chart."
-        )
         with st.echo():
-            ax_save = df.groupby("species").mean().plot(kind="bar", ax=ax)
+            ax_save = (
+                df.groupby("species").mean().plot(kind="bar", y="bill_depth_mm", ax=ax)
+            )
     elif chart_type == "Boxplot":
         with st.echo():
             ax_save = df.plot(kind="box", ax=ax)
