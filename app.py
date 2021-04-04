@@ -30,22 +30,7 @@ with st.beta_container():
         """This website is a learning tool that shows plots using default plot settings. 
         It also shows and the relevant code to create them."""
     )
-    see_notes = st.checkbox("See notes?")
-    if see_notes:
-        st.write(
-            """
-                This project uses [Streamlit](https://streamlit.io/) and the [Palmer Penguins](https://allisonhorst.github.io/palmerpenguins/) dataset. 
-                
-                Plots are interactive where that's the default or easy to add.
-                Plots that use MatPlotlib under the hood have fig and ax objects defined before the code you see below.
-                
-                To see the full code check out the [GitHub repo](https://github.com/discdiver/data-viz-streamlit).
-                
-                The lineplots should have sequence data, so I created a date index with a sequence of dates for them.
-                Some libraries require an explicit mapping of colors for each row. Those plots were left as a single color.
-                There are multiple ways to make some of these plots.
-            """
-        )
+
 
 # User choose user type
 chart_type = st.selectbox("Choose your chart type", plot_types)
@@ -73,8 +58,33 @@ def return_matplotlib_plot(plot_type: str):
         with st.echo():
             ax.bar(x=df["species"], height=df["bill_depth_mm"])
     elif chart_type == "Boxplot":
-        with st.echo():
-            "Bug, can't plot matplotlib plot if import seaborn."
+        "Bug, can't plot matplotlib boxplot."
+        # with st.echo():
+        #     bp = ax.boxplot(x=df[["bill_depth_mm", 'bill_length_mm']], showfliers=True, sym='k.',
+        #     positions=[1, 2],
+        #     patch_artist=True)
+        #     for flier in bp['fliers']:    # outliers
+        #         flier.set_markersize(9)
+        #         flier.set_marker('v')
+        #     for box in bp['boxes']:     # box bodys
+        #         box.set_facecolor('green')
+        #         box.set_edgecolor('black')
+        #         box.set_linewidth(2)
+        #     for whisker in bp['whiskers']:   # whisker line
+        #         whisker.set_linewidth(5)
+        #     for cap in bp['caps']:     # cap line
+        #         cap.set_color('red')
+        #         cap.set_linewidth(10)
+        #     for median in bp['medians']:   # median line
+        #         median.set_linewidth(15)
+        #     # for flier in bp['fliers']:
+        #     #     flier.set(marker='o', color='#e7298a', alpha=0.5)
+        #     # bp
+        #     # bp['boxes'][0]
+            
+        #     # bp
+        #     fig
+        #     st.pyplot(fig)
     elif chart_type == "Line":
         with st.echo():
             ax.plot(df.index, df["bill_length_mm"])
@@ -212,7 +222,7 @@ def return_pd_plot(plot_type: str):
             )
     elif chart_type == "Histogram":
         with st.echo():
-            ax_save = df.plot(kind="hist", x="bill_depth_mm", ax=ax)
+            ax_save = df['bill_depth_mm'].plot(kind="hist", ax=ax)
     elif chart_type == "Bar":
         st.write(
             "The default isn't good, so I used groupby and you get a grouped bar chart."
@@ -275,13 +285,22 @@ with st.beta_container():
     if show_data:
         df
 
-    # ask for assistance
+    # notes
+    st.subheader("Notes")
     st.write(
         """
-        Python has many data visualization libraries. This gallery is not exhaustive.
-        You should always give your plots a title. I don't here for code space reasons.
-        Some boxplots show different show different data where more convenient. 
-        If you would like to add code for another library, 
-        please submit a [pull request](https://github.com/discdiver/data-viz-streamlit).
+        - This project uses [Streamlit](https://streamlit.io/) and the [Palmer Penguins](https://allisonhorst.github.io/palmerpenguins/) dataset.      
+        - Plots are interactive where that's the default or easy to add.
+        - Plots that use MatPlotlib under the hood have fig and ax objects defined before the code you see below.
+        - To see the full code check out the [GitHub repo](https://github.com/discdiver/data-viz-streamlit).
+        - Lineplots should have sequence data, so I created a date index with a sequence of dates for them.
+        - Some libraries require an explicit mapping of colors for each row. Those plots were left as a single color.
+        -  You should always give your plots a title. I don't here for code space reasons.
+        - There are multiple ways to make some of these plots.
+        - Some boxplots show different show different data where more convenient with that library. 
+        - Python has many data visualization libraries. This gallery is not exhaustive. If you would like to add code for another library, please submit a [pull request](https://github.com/discdiver/data-viz-streamlit).
+        
+        Made by Jeff Hale. 
+        Subscribe to my [Data Awesome newsletter](https://dataawesome.com) for the latest tools, tips, and resources.
         """
     )
