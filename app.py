@@ -120,6 +120,7 @@ def return_matplotlib_plot(plot_type: str):
             ax.set_xlabel("bill_depth_mm")
             ax.set_ylabel("bill_length_mm")
             ax.set_zlabel("body_mass_g")
+            plt.title("3D Scatterplot")
     return fig
 
 
