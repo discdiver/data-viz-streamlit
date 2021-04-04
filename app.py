@@ -81,7 +81,7 @@ def return_matplotlib_plot(plot_type: str):
         #     #     flier.set(marker='o', color='#e7298a', alpha=0.5)
         #     # bp
         #     # bp['boxes'][0]
-            
+
         #     # bp
         #     fig
         #     st.pyplot(fig)
@@ -222,7 +222,7 @@ def return_pd_plot(plot_type: str):
             )
     elif chart_type == "Histogram":
         with st.echo():
-            ax_save = df['bill_depth_mm'].plot(kind="hist", ax=ax)
+            ax_save = df["bill_depth_mm"].plot(kind="hist", ax=ax)
     elif chart_type == "Bar":
         st.write(
             "The default isn't good, so I used groupby and you get a grouped bar chart."
@@ -299,7 +299,7 @@ with st.beta_container():
         - There are multiple ways to make some of these plots.
         - Some boxplots show different show different data where more convenient with that library. 
         - Python has many data visualization libraries. This gallery is not exhaustive. If you would like to add code for another library, please submit a [pull request](https://github.com/discdiver/data-viz-streamlit).
-        
+        - You can choose to see two columns, but with a narrow screen this will switch to one column automatically.
         Made by Jeff Hale. 
         Subscribe to my [Data Awesome newsletter](https://dataawesome.com) for the latest tools, tips, and resources.
         """
