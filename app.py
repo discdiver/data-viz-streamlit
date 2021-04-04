@@ -9,7 +9,7 @@ import altair as alt
 # can only set this once, first thing to set
 st.set_page_config(layout="wide")
 
-plot_types = ("Histogram", "Bar", "Boxplot", "Scatter", "Line", "3D Scatter")
+plot_types = ("Scatter", "Histogram", "Bar", "Boxplot", "Line", "3D Scatter")
 libs = ("Matplotlib", "Seaborn", "Plotly Express", "Altair", "Pandas Matplotlib")
 
 # get data
