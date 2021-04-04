@@ -25,10 +25,9 @@ df.index = pd.date_range(start="1/1/18", periods=len(df), freq="D")
 
 with st.beta_container():
     st.title("Python Data Visualization Tour")
-    st.header("Popular Plots in Popular Libraries")
+    st.header("Popular plots in popular plotting libraries")
     st.write(
-        """This website is a learning tool that shows plots using default plot settings. 
-        It also shows and the relevant code to create them."""
+        """This is a learning tool with plots and code."""
     )
 
 
@@ -300,6 +299,8 @@ with st.beta_container():
         - Some boxplots show different show different data where more convenient with that library. 
         - Python has many data visualization libraries. This gallery is not exhaustive. If you would like to add code for another library, please submit a [pull request](https://github.com/discdiver/data-viz-streamlit).
         - You can choose to see two columns, but with a narrow screen this will switch to one column automatically.
+        - For a larger tour of more plots, check out the [Python Graph Gallery](https://www.python-graph-gallery.com/density-plot/)
+       
         Made by Jeff Hale. 
         Subscribe to my [Data Awesome newsletter](https://dataawesome.com) for the latest tools, tips, and resources.
         """
