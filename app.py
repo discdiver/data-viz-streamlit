@@ -6,32 +6,46 @@ import seaborn as sns
 import plotly.express as px
 import altair as alt
 
-
+# can only set this once, first thing to set
 st.set_page_config(layout="wide")
 
 plot_types = ("Histogram", "Bar", "Boxplot", "Scatter", "Line", "3D Scatter")
 libs = ("Matplotlib", "Seaborn", "Plotly Express", "Altair", "Pandas Matplotlib")
 
 # get data
-@st.cache
+@st.cache(allow_output_mutation=True)
 def load_penguins():
     return sns.load_dataset("penguins")
 
 
-df = load_penguins()
+pens_df = load_penguins()
+df = pens_df.copy()
+df.index = pd.date_range(start="1/1/18", periods=len(df), freq="D")
+
 
 with st.beta_container():
     st.title("Python Data Visualization Tour")
     st.header("Popular Plots in Popular Libraries")
     st.write(
-        """This website shows plots using default plot settings. 
-    It is meant to be a learning tool. 
-    It also shows and the relevant code to create them. 
-    Plots are interactive where that's the default or easy to add.
-    It uses streamlit and the Penguins dataset. link to dataset TK
-    To see the full code go to GitHub TK
-    """
+        """This website is a learning tool that shows plots using default plot settings. 
+        It also shows and the relevant code to create them."""
     )
+    see_notes = st.checkbox("See notes?")
+    if see_notes:
+        st.write(
+            """
+                This project uses [Streamlit](https://streamlit.io/) and the [Palmer Penguins](https://allisonhorst.github.io/palmerpenguins/) dataset. 
+                
+                Plots are interactive where that's the default or easy to add.
+                Plots that use MatPlotlib under the hood have fig and ax objects defined before the code you see below.
+                
+                To see the full code check out the [GitHub repo](https://github.com/discdiver/data-viz-streamlit).
+                
+                The lineplots should have sequence data, so I created a date index with a sequence of dates for them.
+                Some libraries require an explicit mapping of colors for each row. Those plots were left as a single color.
+                There are multiple ways to make some of these plots.
+            """
+        )
 
 # User choose user type
 chart_type = st.selectbox("Choose your chart type", plot_types)
@@ -68,7 +82,7 @@ def return_matplotlib_plot(plot_type: str):
             "broken"
     elif chart_type == "Line":
         with st.echo():
-            ax.plot(df["bill_depth_mm"], df["bill_length_mm"])
+            ax.plot(df.index, df["bill_length_mm"])
     elif chart_type == "3D Scatter":
         ax = fig.add_subplot(projection="3d")
         with st.echo():
@@ -95,15 +109,13 @@ def return_sns_plot(plot_type: str):
             sns.barplot(data=df, x="species", y="bill_depth_mm")
     elif chart_type == "Boxplot":
         with st.echo():
-            sns.boxplot(data=df, x="species", y="bill_depth_mm")
+            sns.boxplot(data=df, x="bill_depth_mm", y="bill_depth_mm")
     elif chart_type == "Line":
         with st.echo():
-            sns.lineplot(data=df, x="bill_depth_mm", y="bill_length_mm")
+            sns.lineplot(data=df, x=df.index, y="bill_length_mm")
     elif chart_type == "3D Scatter":
         st.write("Seaborn doesn't do 3D ☹️. Here's 2D.")
-        sns.scatterplot(
-            data=df, x="bill_depth_mm", y="bill_length_mm", hue="island"
-        )
+        sns.scatterplot(data=df, x="bill_depth_mm", y="bill_length_mm", hue="island")
     return fig
 
 
@@ -112,7 +124,9 @@ def return_plotly_plot(plot_type: str):
 
     if chart_type == "Scatter":
         with st.echo():
-            fig = px.scatter(data_frame=df, x="bill_depth_mm", y="bill_length_mm")
+            fig = px.scatter(
+                data_frame=df, x="bill_depth_mm", y="bill_length_mm", color="species"
+            )
     elif chart_type == "Histogram":
         with st.echo():
             fig = px.histogram(data_frame=df, x="bill_depth_mm")
@@ -124,7 +138,7 @@ def return_plotly_plot(plot_type: str):
             fig = px.box(data_frame=df, x="species", y="bill_depth_mm")
     elif chart_type == "Line":
         with st.echo():
-            fig = px.line(data_frame=df, x="bill_depth_mm", y="bill_length_mm")
+            fig = px.line(data_frame=df, x=df.index, y="bill_length_mm")
     elif chart_type == "3D Scatter":
         with st.echo():
             fig = px.scatter_3d(
@@ -173,9 +187,9 @@ def return_altair_plot(plot_type: str):
     elif chart_type == "Line":
         with st.echo():
             fig = (
-                alt.Chart(df)
+                alt.Chart(df.reset_index())
                 .mark_line()
-                .encode(x="bill_depth_mm", y="bill_length_mm")
+                .encode(x="index:T", y="bill_length_mm:Q")
                 .interactive()
             )
     elif chart_type == "3D Scatter":
@@ -203,24 +217,22 @@ def return_pd_plot(plot_type: str):
             )
     elif chart_type == "Histogram":
         with st.echo():
-            ax_save = df.plot(kind="hist", x="bill_depth_mm")
+            ax_save = df.plot(kind="hist", x="bill_depth_mm", ax=ax)
     elif chart_type == "Bar":
+        st.write(
+            "The default isn't good, so I used groupby and you get a grouped bar chart."
+        )
         with st.echo():
-            ax_save = df.plot(kind="bar", x="species", y="bill_depth_mm")
+            ax_save = df.groupby("species").mean().plot(kind="bar", ax=ax)
     elif chart_type == "Boxplot":
         with st.echo():
-            ax_save = df.plot(kind="box", x="species", y="bill_depth_mm")
+            ax_save = df.plot(kind="box", x="species", y="bill_depth_mm", ax=ax)
     elif chart_type == "Line":
         with st.echo():
-            ax_save = df.plot(kind="line", x="bill_depth_mm", y="bill_length_mm")
+            ax_save = df.plot(kind="line", use_index=True, y="bill_length_mm", ax=ax)
     elif chart_type == "3D Scatter":
         st.write("Pandas doesn't do 3D ☹️. Here's 2D.")
-        ax_save = df.plot(
-            kind="scatter",
-            x="bill_depth_mm",
-            y="bill_length_mm",
-            ax=ax,
-        )
+        ax_save = df.plot(kind="scatter", x="bill_depth_mm", y="bill_length_mm", ax=ax)
     return fig
 
 
@@ -270,6 +282,8 @@ with st.beta_container():
 
     # ask for assistance
     st.write(
-        """Python has many data visualization libraries. This gallery is not exhaustive. 
-    If you would like to add code for another library, please submit a pull request."""
+        """
+        Python has many data visualization libraries. This gallery is not exhaustive. 
+        If you would like to add code for another library, 
+        please submit a [pull request](https://github.com/discdiver/data-viz-streamlit)."""
     )
