@@ -97,9 +97,18 @@ def return_matplotlib_plot(plot_type: str):
     elif chart_type == "3D Scatter":
         ax = fig.add_subplot(projection="3d")
         with st.echo():
-            ax.scatter3D(
-                xs=df["bill_depth_mm"], ys=df["bill_length_mm"], zs=df["body_mass_g"]
+            df["color"] = df["species"].replace(
+                {"Adelie": 1, "Chinstrap": 2, "Gentoo": 3}
             )
+            ax.scatter3D(
+                xs=df["bill_depth_mm"],
+                ys=df["bill_length_mm"],
+                zs=df["body_mass_g"],
+                c=df["color"],
+            )
+            ax.set_xlabel("bill_depth_mm")
+            ax.set_ylabel("bill_length_mm")
+            ax.set_zlabel("body_mass_g")
     return fig
 
 
@@ -156,7 +165,13 @@ def return_plotly_plot(plot_type: str):
             )
     elif chart_type == "Bar":
         with st.echo():
-            fig = px.bar(data_frame=df, x="species", y="bill_depth_mm")
+            fig = px.bar(
+                data_frame=df,
+                x="species",
+                y="bill_depth_mm",
+                title="Total Bill Depth by Species",
+            )
+            # by default shows stacked bar chart (sum) with individual hover values
     elif chart_type == "Boxplot":
         with st.echo():
             fig = px.box(data_frame=df, x="species", y="bill_depth_mm")
@@ -201,7 +216,7 @@ def return_altair_plot(plot_type: str):
     elif chart_type == "Bar":
         with st.echo():
             fig = (
-                alt.Chart(df)
+                alt.Chart(df, title="Mean Bill Depth by Species")
                 .mark_bar()
                 .encode(x="species", y="bill_depth_mm")
                 .interactive()
@@ -256,8 +271,16 @@ def return_pd_plot(plot_type: str):
     elif chart_type == "Bar":
         with st.echo():
             ax_save = (
-                df.groupby("species").mean().plot(kind="bar", y="bill_depth_mm", ax=ax)
+                df.groupby("species")
+                .mean()
+                .plot(
+                    kind="bar",
+                    y="bill_depth_mm",
+                    title="Mean Bill Depth by Species",
+                    ax=ax,
+                )
             )
+            plt.ylabel("Bill Depth (mm)")
     elif chart_type == "Boxplot":
         with st.echo():
             ax_save = df.plot(kind="box", ax=ax)
@@ -323,15 +346,16 @@ with st.beta_container():
         - Plots that use MatPlotlib under the hood have fig and ax objects defined before the code you see below.
         - To see the full code check out the [GitHub repo](https://github.com/discdiver/data-viz-streamlit).
         - Lineplots should have sequence data, so I created a date index with a sequence of dates for them.
-        - Some libraries require an explicit mapping of colors for each row. Those plots were left as a single color.
-        -  You should always give your plots a title. I don't here for code space reasons.
+        - Color was added to scatterplots. 
         - There are multiple ways to make some of these plots.
-        - Some boxplots show different show different data where more convenient with that library. 
+        - Where an axis label shows by default, I left it at is. Where it was missing, I added it.
         - Python has many data visualization libraries. This gallery is not exhaustive. If you would like to add code for another library, please submit a [pull request](https://github.com/discdiver/data-viz-streamlit).
         - You can choose to see two columns, but with a narrow screen this will switch to one column automatically.
         - For a larger tour of more plots, check out the [Python Graph Gallery](https://www.python-graph-gallery.com/density-plot/)
-       
+        - That Plotly Express 3D Scatterplot is cool to play with. Check it out! 😎
+        
         Made by Jeff Hale. 
+        
         Subscribe to my [Data Awesome newsletter](https://dataawesome.com) for the latest tools, tips, and resources.
         """
     )
