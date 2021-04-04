@@ -365,7 +365,7 @@ with st.beta_container():
     st.subheader("Notes")
     st.write(
         """
-        - This project uses [Streamlit](https://streamlit.io/) and the [Palmer Penguins](https://allisonhorst.github.io/palmerpenguins/) dataset.      
+        - This app uses [Streamlit](https://streamlit.io/) and the [Palmer Penguins](https://allisonhorst.github.io/palmerpenguins/) dataset.      
         - To see the full code check out the [GitHub repo](https://github.com/discdiver/data-viz-streamlit).
         - Plots are interactive where that's the default or easy to add.
         - Plots that use MatPlotlib under the hood have fig and ax objects defined before the code shown.
