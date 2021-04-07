@@ -268,8 +268,11 @@ def bokeh_plot(chart_type: str, df):
             fig.circle(source=df, x="bill_depth_mm", y="bill_length_mm", color="color")
     elif chart_type == "Histogram":
         with st.echo():
-            fig = figure(title="")
-            fig.hist_hover(source=df, x="species", top="bill_length_mm")
+            hist, edges = np.histogram(df["bill_depth_mm"].dropna(), bins=10)
+            fig = figure(title="Count of Bill Depth Observations")
+            fig.quad(
+                top=hist, bottom=0, left=edges[:-1], right=edges[1:], line_color="white"
+            )
 
     elif chart_type == "Bar":
         with st.echo():
