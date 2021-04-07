@@ -58,8 +58,8 @@ with st.beta_container():
     st.subheader(f"Showing:  {chart_type}")
     st.write("")
 
-three_cols = st.checkbox("2 columns?")
-if three_cols:
+two_cols = st.checkbox("2 columns?")
+if two_cols:
     col1, col2 = st.beta_columns(2)
 
 
@@ -87,7 +87,7 @@ def show_plot(kind: str):
 
 
 # output plots
-if three_cols:
+if two_cols:
     with col1:
         show_plot(kind="Matplotlib")
     with col2:

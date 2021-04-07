@@ -253,49 +253,43 @@ def pd_plot(chart_type: str, df):
 
 
 def bokeh_plot(chart_type: str, df):
-    """ return altair plots """
+    """ return bokeh plots """
 
     if chart_type == "Scatter":
         with st.echo():
-            fig = (
-                #     df,
-                #     title="Bill Depth by Bill Length",
-                # .mark_point()
-                # .encode(x="bill_depth_mm", y="bill_length_mm", color="species")
-                # .interactive()
+            df["color"] = df["species"].replace(
+                {"Adelie": "blue", "Chinstrap": "orange", "Gentoo": "green"}
             )
+            fig = figure(title="Bill Depth by Bill Length")
+            fig.circle(source=df, x="bill_depth_mm", y="bill_length_mm", color="color")
     elif chart_type == "Histogram":
         with st.echo():
-            fig = (
-                # alt.Chart(df, title="Count of Bill Depth Observations")
-                # .mark_bar()
-                # .encode(alt.X("bill_depth_mm", bin=True), y="count()")
-                # .interactive()
-            )
+            fig = figure(title="")
+            fig.hist_hover(source=df, x="species", top="bill_length_mm")
+
     elif chart_type == "Bar":
         with st.echo():
-            fig = (
-                # alt.Chart(df, title="Mean Bill Depth by Species")
-                # .mark_bar()
-                # .encode(x="species", y="bill_depth_mm")
-                # .interactive()
+            fig = figure(title="Mean Bill Depth by Species", x_range=['Gentoo', 'Chinstrap', 'Adelie'])
+            fig.vbar(
+                source=df.groupby("species").mean().reset_index(),
+                x="species",
+                top="bill_length_mm",
+                width=.9
             )
-    elif chart_type == "Boxplot":
-        with st.echo():
-            fig = (
-                #     alt.Chart(df).mark_boxplot().encode(x="species:O", y="bill_depth_mm:Q")
-            )
+            # result appears to be a count?
+
     elif chart_type == "Line":
         with st.echo():
-            fig = figure(title="Bill Length Over Time")
+            fig = figure(title="Bill Length Over Time", x_axis_type="datetime")
             fig.line(source=df.reset_index(), x="index", y="bill_length_mm")
 
     elif chart_type == "3D Scatter":
         st.write("Bokeh maybe doesn't do 3D ☹️. Here's 2D.")
-        fig = (
-            # alt.Chart(df, title="Just a 2D Scatterplot")
-            # .mark_point()
-            # .encode(x="bill_depth_mm", y="bill_length_mm", color="species")
-            # .interactive()
+
+        df["color"] = df["species"].replace(
+            {"Adelie": "blue", "Chinstrap": "orange", "Gentoo": "green"}
         )
+        fig = figure(title="Bill Depth by Bill Length")
+        fig.circle(source=df, x="bill_depth_mm", y="bill_length_mm", color="color")
+
     return fig
