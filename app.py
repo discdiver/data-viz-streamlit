@@ -58,7 +58,7 @@ with st.beta_container():
     st.subheader(f"Showing:  {chart_type}")
     st.write("")
 
-two_cols = st.checkbox("2 columns?")
+two_cols = st.checkbox("2 columns?", True)
 if two_cols:
     col1, col2 = st.beta_columns(2)
 

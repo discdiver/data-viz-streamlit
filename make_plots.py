@@ -29,7 +29,8 @@ def matplotlib_plot(chart_type: str, df):
             plt.ylabel("Count")
     elif chart_type == "Bar":
         with st.echo():
-            ax.bar(x=df["species"], height=df["bill_depth_mm"])
+            df_plt = df.groupby("species", dropna=False).mean().reset_index()
+            ax.bar(x=df_plt["species"], height=df_plt["bill_depth_mm"])
             plt.title("Mean Bill Depth by Species")
             plt.xlabel("Species")
             plt.ylabel("Mean Bill Depth (mm)")
@@ -116,7 +117,7 @@ def plotly_plot(chart_type: str, df):
     elif chart_type == "Bar":
         with st.echo():
             fig = px.bar(
-                data_frame=df.groupby(["species"]).mean().reset_index(),
+                data_frame=df.groupby("species", dropna=False).mean().reset_index(),
                 x="species",
                 y="bill_depth_mm",
                 title="Mean Bill Depth by Species",
@@ -172,7 +173,10 @@ def altair_plot(chart_type: str, df):
     elif chart_type == "Bar":
         with st.echo():
             fig = (
-                alt.Chart(df, title="Mean Bill Depth by Species")
+                alt.Chart(
+                    df.groupby("species", dropna=False).mean().reset_index(),
+                    title="Mean Bill Depth by Species",
+                )
                 .mark_bar()
                 .encode(x="species", y="bill_depth_mm")
                 .interactive()
@@ -227,7 +231,7 @@ def pd_plot(chart_type: str, df):
     elif chart_type == "Bar":
         with st.echo():
             ax_save = (
-                df.groupby("species")
+                df.groupby("species", dropna=False)
                 .mean()
                 .plot(
                     kind="bar",
@@ -269,14 +273,17 @@ def bokeh_plot(chart_type: str, df):
 
     elif chart_type == "Bar":
         with st.echo():
-            fig = figure(title="Mean Bill Depth by Species", x_range=['Gentoo', 'Chinstrap', 'Adelie'])
-            fig.vbar(
-                source=df.groupby("species").mean().reset_index(),
-                x="species",
-                top="bill_length_mm",
-                width=.9
+            fig = figure(
+                title="Mean Bill Depth by Species",
+                x_range=["Gentoo", "Chinstrap", "Adelie"],
             )
-            # result appears to be a count?
+
+            fig.vbar(
+                source=df.groupby("species", dropna=False).mean(),
+                x="species",
+                top="bill_depth_mm",
+                width=0.8,
+            )
 
     elif chart_type == "Line":
         with st.echo():
