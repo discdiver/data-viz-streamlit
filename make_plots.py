@@ -294,7 +294,7 @@ def bokeh_plot(chart_type: str, df):
             fig.line(source=df.reset_index(), x="index", y="bill_length_mm")
 
     elif chart_type == "3D Scatter":
-        st.write("Bokeh maybe doesn't do 3D ☹️. Here's 2D.")
+        st.write("Bokeh doesn't do 3D ☹️. Here's 2D.")
 
         df["color"] = df["species"].replace(
             {"Adelie": "blue", "Chinstrap": "orange", "Gentoo": "green"}
