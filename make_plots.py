@@ -116,11 +116,12 @@ def plotly_plot(chart_type: str, df):
             )
     elif chart_type == "Bar":
         with st.echo():
-            fig = px.bar(
-                data_frame=df.groupby("species", dropna=False).mean().reset_index(),
+            fig = px.histogram(
+                data_frame=df,
                 x="species",
                 y="bill_depth_mm",
                 title="Mean Bill Depth by Species",
+                histfunc="avg",
             )
             # by default shows stacked bar chart (sum) with individual hover values
     elif chart_type == "Boxplot":

@@ -121,15 +121,14 @@ with st.beta_container():
         - Plots are interactive where that's the default or easy to add.
         - Plots that use MatPlotlib under the hood have fig and ax objects defined before the code shown.
         - Lineplots should have sequence data, so I created a date index with a sequence of dates for them. 
-        - Color was added to scatterplots. 
-        - Where an axis label shows by default, I left it at is. Generally were it was missing, I added it.
+        - Where an axis label shows by default, I left it at is. Generally where it was missing, I added it.
         - There are multiple ways to make some of these plots.
         - You can choose to see two columns, but with a narrow screen this will switch to one column automatically.
         - Python has many data visualization libraries. This gallery is not exhaustive. If you would like to add code for another library, please submit a [pull request](https://github.com/discdiver/data-viz-streamlit).
         - For a larger tour of more plots, check out the [Python Graph Gallery](https://www.python-graph-gallery.com/density-plot/)
         - The interactive Plotly Express 3D Scatterplot is cool to play with. Check it out! 😎
         
-        Made by Jeff Hale. 
+        Made by [Jeff Hale](https://www.linkedin.com/in/-jeffhale/). 
         
         Subscribe to my [Data Awesome newsletter](https://dataawesome.com) for the latest tools, tips, and resources.
         """
