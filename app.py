@@ -125,7 +125,7 @@ with st.beta_container():
         - There are multiple ways to make some of these plots.
         - You can choose to see two columns, but with a narrow screen this will switch to one column automatically.
         - Python has many data visualization libraries. This gallery is not exhaustive. If you would like to add code for another library, please submit a [pull request](https://github.com/discdiver/data-viz-streamlit).
-        - For a larger tour of more plots, check out the [Python Graph Gallery](https://www.python-graph-gallery.com/density-plot/)
+        - For a larger tour of more plots, check out the [Python Graph Gallery](https://www.python-graph-gallery.com/density-plot/) and [Python Plotting for Exploratory Data Analysis](https://pythonplot.com/).
         - The interactive Plotly Express 3D Scatterplot is cool to play with. Check it out! 😎
         
         Made by [Jeff Hale](https://www.linkedin.com/in/-jeffhale/). 
