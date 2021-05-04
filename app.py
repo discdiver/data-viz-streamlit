@@ -15,6 +15,7 @@ from make_plots import (
     bokeh_plot,
 )
 
+
 # can only set this once, first thing to set
 st.set_page_config(layout="wide")
 
@@ -35,7 +36,7 @@ libs = (
 )
 
 # get data
-@st.cache(allow_output_mutation=True)
+# @st.cache(allow_output_mutation=True) # maybe source of resource limit issue
 def load_penguins():
     return sns.load_dataset("penguins")
 
@@ -51,7 +52,7 @@ with st.beta_container():
     st.write("""See the code and plots for five libraries at once.""")
 
 
-# User choose user type
+# User choose type
 chart_type = st.selectbox("Choose your chart type", plot_types)
 
 with st.beta_container():
