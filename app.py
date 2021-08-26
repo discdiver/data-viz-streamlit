@@ -46,7 +46,7 @@ df = pens_df.copy()
 df.index = pd.date_range(start="1/1/18", periods=len(df), freq="D")
 
 
-with st.beta_container():
+with st.container():
     st.title("Python Data Visualization Tour")
     st.header("Popular plots in popular plotting libraries")
     st.write("""See the code and plots for five libraries at once.""")
@@ -55,13 +55,13 @@ with st.beta_container():
 # User choose type
 chart_type = st.selectbox("Choose your chart type", plot_types)
 
-with st.beta_container():
+with st.container():
     st.subheader(f"Showing:  {chart_type}")
     st.write("")
 
 two_cols = st.checkbox("2 columns?", True)
 if two_cols:
-    col1, col2 = st.beta_columns(2)
+    col1, col2 = st.columns(2)
 
 
 # create plots
@@ -102,12 +102,12 @@ if two_cols:
     with col2:
         show_plot(kind="Bokeh")
 else:
-    with st.beta_container():
+    with st.container():
         for lib in libs:
             show_plot(kind=lib)
 
 # display data
-with st.beta_container():
+with st.container():
     show_data = st.checkbox("See the raw data?")
 
     if show_data:
