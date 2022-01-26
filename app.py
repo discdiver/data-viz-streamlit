@@ -36,20 +36,20 @@ libs = (
 )
 
 # get data
-# @st.cache(allow_output_mutation=True) # maybe source of resource limit issue
-def load_penguins():
-    return sns.load_dataset("penguins")
+@st.cache()
+def load_penguins(allow_output_mutation=True):
+    pens_df = sns.load_dataset("penguins")
+    pens_df.copy(deep=True)
+    pens_df.index = pd.date_range(start="1/1/18", periods=len(pens_df), freq="D")
+    return pens_df
 
 
-pens_df = load_penguins()
-df = pens_df.copy()
-df.index = pd.date_range(start="1/1/18", periods=len(df), freq="D")
-
+df = load_penguins()
 
 with st.beta_container():
-    st.title("Python Data Visualization Tour")
+    st.title("Python Data Visualization Tour 📊")
     st.header("Popular plots in popular plotting libraries")
-    st.write("""See the code and plots for five libraries at once.""")
+    st.write("""See the code and plots for six libraries at once!""")
 
 
 # User choose type
@@ -120,7 +120,7 @@ with st.beta_container():
         - This app uses [Streamlit](https://streamlit.io/) and the [Palmer Penguins](https://allisonhorst.github.io/palmerpenguins/) dataset.      
         - To see the full code check out the [GitHub repo](https://github.com/discdiver/data-viz-streamlit).
         - Plots are interactive where that's the default or easy to add.
-        - Plots that use MatPlotlib under the hood have fig and ax objects defined before the code shown.
+        - Plots that use Matplotlib under the hood have fig and ax objects defined before the code shown.
         - Lineplots should have sequence data, so I created a date index with a sequence of dates for them. 
         - Where an axis label shows by default, I left it at is. Generally where it was missing, I added it.
         - There are multiple ways to make some of these plots.
