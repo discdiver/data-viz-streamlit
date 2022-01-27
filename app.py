@@ -35,33 +35,33 @@ libs = (
     "Bokeh",
 )
 
-# get data
+# Get data
 @st.cache()
-def load_penguins(allow_output_mutation=True):
+def load_penguins():
     pens_df = sns.load_dataset("penguins")
-    pens_df.copy(deep=True)
     pens_df.index = pd.date_range(start="1/1/18", periods=len(pens_df), freq="D")
     return pens_df
 
 
-df = load_penguins()
+df = load_penguins().copy(deep=True)
 
-with st.beta_container():
+# Top text area
+with st.container():
     st.title("Python Data Visualization Tour 📊")
     st.header("Popular plots in popular plotting libraries")
-    st.write("""See the code and plots for six libraries at once!""")
+    # st.subheader("""See the code and plots for six libraries at once!""")
 
 
 # User choose type
 chart_type = st.selectbox("Choose your chart type", plot_types)
 
-with st.beta_container():
+with st.container():
     st.subheader(f"Showing:  {chart_type}")
     st.write("")
 
 two_cols = st.checkbox("2 columns?", True)
 if two_cols:
-    col1, col2 = st.beta_columns(2)
+    col1, col2 = st.columns(2)
 
 
 # create plots
@@ -102,12 +102,12 @@ if two_cols:
     with col2:
         show_plot(kind="Bokeh")
 else:
-    with st.beta_container():
+    with st.container():
         for lib in libs:
             show_plot(kind=lib)
 
 # display data
-with st.beta_container():
+with st.container():
     show_data = st.checkbox("See the raw data?")
 
     if show_data:
