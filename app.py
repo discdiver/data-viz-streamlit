@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 import altair as alt
+from plotnine import ggplot
 
 # from bokeh.plotting import figure
 from make_plots import (
@@ -13,7 +14,8 @@ from make_plots import (
     pd_plot,
     plotly_plot,
     altair_plot,
-    #    bokeh_plot,
+    plotnine_plot,
+    #    bokeh_plot, # dependency issues
 )
 
 
@@ -33,6 +35,7 @@ libs = (
     "Plotly Express",
     "Altair",
     "Pandas Matplotlib",
+    "Plotnine",
     #    "Bokeh",
 )
 
@@ -84,6 +87,9 @@ def show_plot(kind: str):
     elif kind == "Pandas Matplotlib":
         plot = pd_plot(chart_type, df)
         st.pyplot(plot)
+    elif kind == "Plotnine":
+        plot = plotnine_plot(chart_type, df)
+        st.pyplot(ggplot.draw(plot))
     # elif kind == "Bokeh":
     #     plot = bokeh_plot(chart_type, df)
     #     st.bokeh_chart(plot, use_container_width=True)
@@ -101,6 +107,8 @@ if two_cols:
         show_plot(kind="Altair")
     with col1:
         show_plot(kind="Pandas Matplotlib")
+    with col2:
+        show_plot(kind="Plotnine")
     # with col2:
     #     show_plot(kind="Bokeh")
 else:

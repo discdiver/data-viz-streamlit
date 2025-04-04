@@ -5,8 +5,19 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 import altair as alt
+from plotnine import (
+    ggplot,
+    aes,
+    geom_point,
+    geom_histogram,
+    geom_bar,
+    geom_boxplot,
+    geom_line,
+    labs,
+    theme_minimal,
+)
 
-# from bokeh.plotting import figure
+# from bokeh.plotting import figure # dependency issuees
 
 
 def matplotlib_plot(chart_type: str, df):
@@ -260,6 +271,87 @@ def pd_plot(chart_type: str, df):
         st.write("Pandas doesn't do 3D ☹️. Here's 2D.")
         ax_save = df.plot(kind="scatter", x="bill_depth_mm", y="bill_length_mm", ax=ax)
         plt.title("Just a 2D Scatterplot")
+    return fig
+
+
+def plotnine_plot(chart_type: str, df):
+    """return plotnine plots"""
+
+    if chart_type == "Scatter":
+        with st.echo():
+            fig = (
+                ggplot(df, aes(x="bill_depth_mm", y="bill_length_mm", color="species"))
+                + geom_point()
+                + labs(
+                    title="Bill Depth by Bill Length",
+                    x="Bill Depth (mm)",
+                    y="Bill Length (mm)",
+                )
+                + theme_minimal()
+            )
+    elif chart_type == "Histogram":
+        with st.echo():
+            fig = (
+                ggplot(df, aes(x="bill_depth_mm"))
+                + geom_histogram(binwidth=1, fill="blue", color="black")
+                + labs(
+                    title="Count of Bill Depth Observations",
+                    x="Bill Depth (mm)",
+                    y="Count",
+                )
+                + theme_minimal()
+            )
+    elif chart_type == "Bar":
+        with st.echo():
+            df_plt = (
+                df.groupby("species").aggregate({"bill_depth_mm": "mean"}).reset_index()
+            )
+            fig = (
+                ggplot(df_plt, aes(x="species", y="bill_depth_mm", fill="species"))
+                + geom_bar(stat="identity")
+                + labs(
+                    title="Mean Bill Depth by Species",
+                    x="Species",
+                    y="Mean Bill Depth (mm)",
+                )
+                + theme_minimal()
+            )
+    elif chart_type == "Boxplot":
+        with st.echo():
+            fig = (
+                ggplot(df, aes(x="species", y="bill_depth_mm"))
+                + geom_boxplot()
+                + labs(
+                    title="Bill Depth Observations",
+                    x="Species",
+                    y="Bill Depth (mm)",
+                )
+                + theme_minimal()
+            )
+    elif chart_type == "Line":
+        with st.echo():
+            fig = (
+                ggplot(df.reset_index(), aes(x="index", y="bill_length_mm"))
+                + geom_line()
+                + labs(
+                    title="Bill Length Over Time",
+                    x="Index",
+                    y="Bill Length (mm)",
+                )
+                + theme_minimal()
+            )
+    elif chart_type == "3D Scatter":
+        st.write("Plotnine doesn't do 3D ☹️. Here's 2D.")
+        fig = (
+            ggplot(df, aes(x="bill_depth_mm", y="bill_length_mm", color="species"))
+            + geom_point()
+            + labs(
+                title="Just a 2D Scatterplot",
+                x="Bill Depth (mm)",
+                y="Bill Length (mm)",
+            )
+            + theme_minimal()
+        )
     return fig
 
 
