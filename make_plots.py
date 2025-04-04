@@ -5,11 +5,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 import altair as alt
-from bokeh.plotting import figure
+
+# from bokeh.plotting import figure
 
 
 def matplotlib_plot(chart_type: str, df):
-    """ return matplotlib plots """
+    """return matplotlib plots"""
 
     fig, ax = plt.subplots()
     if chart_type == "Scatter":
@@ -29,7 +30,9 @@ def matplotlib_plot(chart_type: str, df):
             plt.ylabel("Count")
     elif chart_type == "Bar":
         with st.echo():
-            df_plt = df.groupby("species", dropna=False).mean().reset_index()
+            df_plt = (
+                df.groupby("species").aggregate({"bill_depth_mm": "mean"}).reset_index()
+            )
             ax.bar(x=df_plt["species"], height=df_plt["bill_depth_mm"])
             plt.title("Mean Bill Depth by Species")
             plt.xlabel("Species")
@@ -60,7 +63,7 @@ def matplotlib_plot(chart_type: str, df):
 
 
 def sns_plot(chart_type: str, df):
-    """ return seaborn plots """
+    """return seaborn plots"""
 
     fig, ax = plt.subplots()
     if chart_type == "Scatter":
@@ -96,7 +99,7 @@ def sns_plot(chart_type: str, df):
 
 
 def plotly_plot(chart_type: str, df):
-    """ return plotly plots """
+    """return plotly plots"""
 
     if chart_type == "Scatter":
         with st.echo():
@@ -150,7 +153,7 @@ def plotly_plot(chart_type: str, df):
 
 
 def altair_plot(chart_type: str, df):
-    """ return altair plots """
+    """return altair plots"""
 
     if chart_type == "Scatter":
         with st.echo():
@@ -175,7 +178,7 @@ def altair_plot(chart_type: str, df):
         with st.echo():
             fig = (
                 alt.Chart(
-                    df.groupby("species", dropna=False).mean().reset_index(),
+                    df.groupby("species", dropna=False, as_index=False).mean(),
                     title="Mean Bill Depth by Species",
                 )
                 .mark_bar()
@@ -207,7 +210,7 @@ def altair_plot(chart_type: str, df):
 
 
 def pd_plot(chart_type: str, df):
-    """ return pd matplotlib plots """
+    """return pd matplotlib plots"""
 
     fig, ax = plt.subplots()
     if chart_type == "Scatter":
@@ -232,7 +235,7 @@ def pd_plot(chart_type: str, df):
     elif chart_type == "Bar":
         with st.echo():
             ax_save = (
-                df.groupby("species", dropna=False)
+                df.groupby("species", dropna=False, as_index=False)
                 .mean()
                 .plot(
                     kind="bar",
@@ -257,50 +260,52 @@ def pd_plot(chart_type: str, df):
     return fig
 
 
-def bokeh_plot(chart_type: str, df):
-    """ return bokeh plots """
+# bokeh recent versions incompattible with streamlit and downgrading leads to numpy issues 4/3/25
+#
+# # def bokeh_plot(chart_type: str, df):
+#     """ return bokeh plots """
 
-    if chart_type == "Scatter":
-        with st.echo():
-            df["color"] = df["species"].replace(
-                {"Adelie": "blue", "Chinstrap": "orange", "Gentoo": "green"}
-            )
-            fig = figure(title="Bill Depth by Bill Length")
-            fig.circle(source=df, x="bill_depth_mm", y="bill_length_mm", color="color")
-    elif chart_type == "Histogram":
-        with st.echo():
-            hist, edges = np.histogram(df["bill_depth_mm"].dropna(), bins=10)
-            fig = figure(title="Count of Bill Depth Observations")
-            fig.quad(
-                top=hist, bottom=0, left=edges[:-1], right=edges[1:], line_color="white"
-            )
+#     if chart_type == "Scatter":
+#         with st.echo():
+#             df["color"] = df["species"].replace(
+#                 {"Adelie": "blue", "Chinstrap": "orange", "Gentoo": "green"}
+#             )
+#             fig = figure(title="Bill Depth by Bill Length")
+#             fig.circle(source=df, x="bill_depth_mm", y="bill_length_mm", color="color")
+#     elif chart_type == "Histogram":
+#         with st.echo():
+#             hist, edges = np.histogram(df["bill_depth_mm"].dropna(), bins=10)
+#             fig = figure(title="Count of Bill Depth Observations")
+#             fig.quad(
+#                 top=hist, bottom=0, left=edges[:-1], right=edges[1:], line_color="white"
+#             )
 
-    elif chart_type == "Bar":
-        with st.echo():
-            fig = figure(
-                title="Mean Bill Depth by Species",
-                x_range=["Gentoo", "Chinstrap", "Adelie"],
-            )
+# elif chart_type == "Bar":
+#     with st.echo():
+#         fig = figure(
+#             title="Mean Bill Depth by Species",
+#             x_range=["Gentoo", "Chinstrap", "Adelie"],
+#         )
 
-            fig.vbar(
-                source=df.groupby("species", dropna=False).mean(),
-                x="species",
-                top="bill_depth_mm",
-                width=0.8,
-            )
+#         fig.vbar(
+#             source=df.groupby("species", dropna=False).mean(),
+#             x="species",
+#             top="bill_depth_mm",
+#             width=0.8,
+#         )
 
-    elif chart_type == "Line":
-        with st.echo():
-            fig = figure(title="Bill Length Over Time", x_axis_type="datetime")
-            fig.line(source=df.reset_index(), x="index", y="bill_length_mm")
+# elif chart_type == "Line":
+#     with st.echo():
+#         fig = figure(title="Bill Length Over Time", x_axis_type="datetime")
+#         fig.line(source=df.reset_index(), x="index", y="bill_length_mm")
 
-    elif chart_type == "3D Scatter":
-        st.write("Bokeh doesn't do 3D ☹️. Here's 2D.")
+# elif chart_type == "3D Scatter":
+#     st.write("Bokeh doesn't do 3D ☹️. Here's 2D.")
 
-        df["color"] = df["species"].replace(
-            {"Adelie": "blue", "Chinstrap": "orange", "Gentoo": "green"}
-        )
-        fig = figure(title="Bill Depth by Bill Length")
-        fig.circle(source=df, x="bill_depth_mm", y="bill_length_mm", color="color")
+#     df["color"] = df["species"].replace(
+#         {"Adelie": "blue", "Chinstrap": "orange", "Gentoo": "green"}
+#     )
+#     fig = figure(title="Bill Depth by Bill Length")
+#     fig.circle(source=df, x="bill_depth_mm", y="bill_length_mm", color="color")
 
-    return fig
+# return fig

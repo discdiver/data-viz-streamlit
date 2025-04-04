@@ -5,14 +5,15 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 import altair as alt
-from bokeh.plotting import figure
+
+# from bokeh.plotting import figure
 from make_plots import (
     matplotlib_plot,
     sns_plot,
     pd_plot,
     plotly_plot,
     altair_plot,
-    bokeh_plot,
+    #    bokeh_plot,
 )
 
 
@@ -32,11 +33,12 @@ libs = (
     "Plotly Express",
     "Altair",
     "Pandas Matplotlib",
-    "Bokeh",
+    #    "Bokeh",
 )
 
+
 # Get data
-@st.cache()
+@st.cache_data()
 def load_penguins():
     pens_df = sns.load_dataset("penguins")
     pens_df.index = pd.date_range(start="1/1/18", periods=len(pens_df), freq="D")
@@ -82,9 +84,9 @@ def show_plot(kind: str):
     elif kind == "Pandas Matplotlib":
         plot = pd_plot(chart_type, df)
         st.pyplot(plot)
-    elif kind == "Bokeh":
-        plot = bokeh_plot(chart_type, df)
-        st.bokeh_chart(plot, use_container_width=True)
+    # elif kind == "Bokeh":
+    #     plot = bokeh_plot(chart_type, df)
+    #     st.bokeh_chart(plot, use_container_width=True)
 
 
 # output plots
@@ -99,8 +101,8 @@ if two_cols:
         show_plot(kind="Altair")
     with col1:
         show_plot(kind="Pandas Matplotlib")
-    with col2:
-        show_plot(kind="Bokeh")
+    # with col2:
+    #     show_plot(kind="Bokeh")
 else:
     with st.container():
         for lib in libs:
