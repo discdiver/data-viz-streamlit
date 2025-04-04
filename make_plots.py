@@ -176,9 +176,12 @@ def altair_plot(chart_type: str, df):
             )
     elif chart_type == "Bar":
         with st.echo():
+            df_plt = (
+                df.groupby("species").aggregate({"bill_depth_mm": "mean"}).reset_index()
+            )
             fig = (
                 alt.Chart(
-                    df.groupby("species", dropna=False, as_index=False).mean(),
+                    df_plt,
                     title="Mean Bill Depth by Species",
                 )
                 .mark_bar()
@@ -234,15 +237,15 @@ def pd_plot(chart_type: str, df):
             plt.xlabel("Bill Depth (mm)")
     elif chart_type == "Bar":
         with st.echo():
-            ax_save = (
-                df.groupby("species", dropna=False, as_index=False)
-                .mean()
-                .plot(
-                    kind="bar",
-                    y="bill_depth_mm",
-                    title="Mean Bill Depth by Species",
-                    ax=ax,
-                )
+
+            df_plt = (
+                df.groupby("species").aggregate({"bill_depth_mm": "mean"}).reset_index()
+            )
+            ax_save = df_plt.plot(
+                kind="bar",
+                y="bill_depth_mm",
+                title="Mean Bill Depth by Species",
+                ax=ax,
             )
             plt.ylabel("Bill Depth (mm)")
     elif chart_type == "Boxplot":
